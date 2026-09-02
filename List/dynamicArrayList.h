@@ -4,11 +4,11 @@
 #define basicCapacity 16
 
 template<typename T>
-class staticArrayList : public List<T> {
-    private:
+class dynamicArrayList : public List<T> {
+private:
     int m_size;
     int m_capacity;
-    T* staticArray;
+    T* dynamicArray;
 
     //Helper Method;
     bool isIndexValid(const int& index) const {
@@ -23,46 +23,46 @@ class staticArrayList : public List<T> {
         }
         T* newArray = new T[m_capacity];
         for (int i = 0; i < m_size; i++) {
-            newArray[i] = staticArray[i];
+            newArray[i] = dynamicArray[i];
         }
-        delete[] staticArray;
-        staticArray = newArray;
+        delete[] dynamicArray;
+        dynamicArray = newArray;
     }
 
 
-    public:
-    staticArrayList() {
+public:
+    dynamicArrayList() {
         m_size = 0;
         m_capacity = basicCapacity;
-        staticArray = new T[m_capacity];
+        dynamicArray = new T[m_capacity];
     }
-    staticArrayList(const staticArrayList& other) {
+    dynamicArrayList(const dynamicArrayList& other) {
         m_size = other.m_size;
         m_capacity = other.m_capacity;
-        staticArray = new T[m_capacity];
+        dynamicArray = new T[m_capacity];
         for (int i = 0; i < m_size; i++) {
-            staticArray[i] = other.staticArray[i];
+            dynamicArray[i] = other.dynamicArray[i];
         }
     }
 
-    staticArrayList& operator=(const staticArrayList& other) {
+    dynamicArrayList& operator=(const dynamicArrayList& other) {
         if (this == &other) {
             return *this;
         }
 
-        delete[] staticArray;
+        delete[] dynamicArray;
 
         m_size = other.m_size;
         m_capacity = other.m_capacity;
-        staticArray = new T[m_capacity];
+        dynamicArray = new T[m_capacity];
         for (int i = 0; i < m_size; i++) {
-            staticArray[i] = other.staticArray[i];
+            dynamicArray[i] = other.dynamicArray[i];
         }
 
         return *this;
     }
-    ~staticArrayList() {
-        delete[] staticArray;
+    ~dynamicArrayList() {
+        delete[] dynamicArray;
     }
 
 
@@ -74,21 +74,18 @@ class staticArrayList : public List<T> {
         if (!isIndexValid(index)) {
             throw std::out_of_range("Index out of bounds");
         }
-        return staticArray[index];
+        return dynamicArray[index];
     }
 
     int indexOf(const T& value) const override {
         for (int i = 0; i < this->m_size; i++) {
-            if (staticArray[i] == value) { return i; }
+            if (dynamicArray[i] == value) { return i; }
         }
         return -1; 
     }
 
     bool contains(const T& value) const override {
-        for (int i = 0; i < this->m_size; i++) {
-            if (staticArray[i] == value) { return true; }
-        }
-        return false;
+        return indexOf(value) != -1;
     }
 
 
@@ -96,13 +93,13 @@ class staticArrayList : public List<T> {
         if (!isIndexValid(index)) {
             throw std::out_of_range("Index out of bounds");
         }
-        staticArray[index] = value;
+        dynamicArray[index] = value;
     }
 
     void add(const T& value) override {
         if (m_size == m_capacity)
             resize();
-        staticArray[m_size] = value;
+        dynamicArray[m_size] = value;
         m_size++;
     }
 
@@ -116,22 +113,22 @@ class staticArrayList : public List<T> {
             T* newArray = new T[m_capacity];
 
             for (int i = 0; i < index; i++) {
-                newArray[i] = staticArray[i];
+                newArray[i] = dynamicArray[i];
             }
 
             newArray[index] = value;
 
             for (int i = index; i < m_size; i++) {
-                newArray[i + 1] = staticArray[i];
+                newArray[i + 1] = dynamicArray[i];
             }
 
-            delete[] staticArray;
-            staticArray = newArray;
+            delete[] dynamicArray;
+            dynamicArray = newArray;
         } else {
             for (int i = m_size; i > index; i--) {
-                staticArray[i] = staticArray[i - 1];
+                dynamicArray[i] = dynamicArray[i - 1];
             }
-            staticArray[index] = value;
+            dynamicArray[index] = value;
         }
 
         m_size++; 
@@ -143,7 +140,7 @@ class staticArrayList : public List<T> {
         }
 
         for (int i = index; i < m_size - 1; i++) {
-            staticArray[i] = staticArray[i + 1];
+            dynamicArray[i] = dynamicArray[i + 1];
         }
         m_size--;
 
@@ -164,7 +161,7 @@ class staticArrayList : public List<T> {
     }
 
     Iterator<T> iterator() override {
-        return Iterator<T>(staticArray);
+        return Iterator<T>(dynamicArray);
     }
 
 };
