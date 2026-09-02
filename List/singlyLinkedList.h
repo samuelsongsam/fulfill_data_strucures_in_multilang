@@ -7,10 +7,7 @@ class Node {
 public:
     T value;
     Node* next;
-    Node() {
-        value = 0;
-        next = nullptr;
-    }
+    Node() : value(T()), next(nullptr) {}
     Node(T v) {
         value = v;
         next = nullptr;
