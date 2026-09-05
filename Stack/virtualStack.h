@@ -2,6 +2,7 @@
 template <typename T>
 class Stack {
 public:
+
     virtual ~Stack() = default;
 
     virtual void push(const T& value) = 0;
