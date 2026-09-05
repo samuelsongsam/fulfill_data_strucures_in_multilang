@@ -6,13 +6,13 @@
 template<typename T>
 class dynamicArrayList : public List<T> {
 private:
-    int m_size;
-    int m_capacity;
+    size_t m_size;
+    size_t m_capacity;
     T* dynamicArray;
 
     //Helper Method;
-    bool isIndexValid(const int& index) const {
-        return index < m_size && index >= 0;
+    bool isIndexValid(const size_t& index) const {
+        return index < m_size;
     }
 
     void resize(bool doubleCapacity = true) {
@@ -22,7 +22,7 @@ private:
             m_capacity /= 2;
         }
         T* newArray = new T[m_capacity];
-        for (int i = 0; i < m_size; i++) {
+        for (size_t i = 0; i < m_size; i++) {
             newArray[i] = dynamicArray[i];
         }
         delete[] dynamicArray;
@@ -40,7 +40,7 @@ public:
         m_size = other.m_size;
         m_capacity = other.m_capacity;
         dynamicArray = new T[m_capacity];
-        for (int i = 0; i < m_size; i++) {
+        for (size_t i = 0; i < m_size; i++) {
             dynamicArray[i] = other.dynamicArray[i];
         }
     }
@@ -55,7 +55,7 @@ public:
         m_size = other.m_size;
         m_capacity = other.m_capacity;
         dynamicArray = new T[m_capacity];
-        for (int i = 0; i < m_size; i++) {
+        for (size_t i = 0; i < m_size; i++) {
             dynamicArray[i] = other.dynamicArray[i];
         }
 
@@ -66,30 +66,30 @@ public:
     }
 
 
-    int size() const override { return this->m_size; }
+    size_t size() const override { return this->m_size; }
 
     bool isEmpty() const override { return this->m_size == 0; }
 
-    T get(int index) const override {
+    T get(size_t index) const override {
         if (!isIndexValid(index)) {
             throw std::out_of_range("Index out of bounds");
         }
         return dynamicArray[index];
     }
 
-    int indexOf(const T& value) const override {
-        for (int i = 0; i < this->m_size; i++) {
+    size_t indexOf(const T& value) const override {
+        for (size_t i = 0; i < this->m_size; i++) {
             if (dynamicArray[i] == value) { return i; }
         }
-        return -1; 
+        return List<T>::npos;
     }
 
     bool contains(const T& value) const override {
-        return indexOf(value) != -1;
+        return indexOf(value) != List<T>::npos;
     }
 
 
-    void set(int index, const T& value) override {
+    void set(size_t index, const T& value) override {
         if (!isIndexValid(index)) {
             throw std::out_of_range("Index out of bounds");
         }
@@ -103,8 +103,8 @@ public:
         m_size++;
     }
 
-    void insert(int index, const T& value) override {
-        if (index < 0 || index > m_size) { 
+    void insert(size_t index, const T& value) override {
+        if (index > m_size) {
             throw std::out_of_range("Index out of bounds");
         }
 
@@ -112,20 +112,20 @@ public:
             m_capacity *= 2;
             T* newArray = new T[m_capacity];
 
-            for (int i = 0; i < index; i++) {
+            for (size_t i = 0; i < index; i++) {
                 newArray[i] = dynamicArray[i];
             }
 
             newArray[index] = value;
 
-            for (int i = index; i < m_size; i++) {
+            for (size_t i = index; i < m_size; i++) {
                 newArray[i + 1] = dynamicArray[i];
             }
 
             delete[] dynamicArray;
             dynamicArray = newArray;
         } else {
-            for (int i = m_size; i > index; i--) {
+            for (size_t i = m_size; i > index; i--) {
                 dynamicArray[i] = dynamicArray[i - 1];
             }
             dynamicArray[index] = value;
@@ -134,12 +134,12 @@ public:
         m_size++; 
     }
 
-    void remove(int index) override {
+    void remove(size_t index) override {
         if (!isIndexValid(index)) {
             throw std::out_of_range("Index out of bounds");
         }
 
-        for (int i = index; i < m_size - 1; i++) {
+        for (size_t i = index; i < m_size - 1; i++) {
             dynamicArray[i] = dynamicArray[i + 1];
         }
         m_size--;
@@ -150,8 +150,8 @@ public:
     }
 
     void removeValue(const T& value) override {
-        int index = indexOf(value);
-        if (index != -1) {
+        size_t index = indexOf(value);
+        if (index != List<T>::npos) {
             remove(index);
         }
     }

@@ -18,7 +18,7 @@ template<typename T>
 class singlyLinkedArrayList : public List<T> {
 private:
     Node<T>* sentinal;
-    int m_size;
+    size_t m_size;
 
 public:
     singlyLinkedArrayList() {
@@ -58,24 +58,24 @@ public:
         delete sentinal;
     }
 
-    int size() const override { return this->m_size; }
+    size_t size() const override { return this->m_size; }
 
     bool isEmpty() const override { return this->m_size == 0; }
 
-    T get(int index) const override {
-        if (index < 0 || index >= m_size) {
+    T get(size_t index) const override {
+        if (index >= m_size) {
             throw std::out_of_range("Index out of range");
         }
         Node<T>* current = sentinal;
-        for (int i = 1; i <= index; ++i) {
+        for (size_t i = 1; i <= index; ++i) {
             current = current->next;
         }
         return current->value;
     }
 
-    int indexOf(const T& value) const override {
+    size_t indexOf(const T& value) const override {
         Node<T>* current = sentinal->next;
-        int index = 0;
+        size_t index = 0;
         while (current != nullptr) {
             if (current->value == value) {
                 return index;
@@ -83,23 +83,24 @@ public:
             current = current->next;
             ++index;
         }
-        return -1;
+        return List<T>::npos;
     }
 
     bool contains(const T& value) const override {
-        return indexOf(value) != -1;
+        return indexOf(value) != List<T>::npos;
     }
 
 
-    void set(int index, const T& value) override {
-        if (index < 0 || index > m_size) {
-            if (index == m_size + 1) {
+    void set(size_t index, const T& value) override {
+        if (index >= m_size) {
+            if (index == m_size) {
                 add(value);
-            } else
+            } else {
                 throw std::out_of_range("Index out of range");
+            }
         }
         Node<T>* current = sentinal;
-        for (int i = 1; i <= index; ++i) {
+        for (size_t i = 1; i <= index; ++i) {
             current = current->next;
         }
         current->value = value;
@@ -114,9 +115,9 @@ public:
         ++m_size;
     }
 
-    void insert(int index, const T& value) override {
+    void insert(size_t index, const T& value) override {
         Node<T>* current = sentinal;
-        for (int i = 1; i < index; ++i) {
+        for (size_t i = 1; i < index; ++i) {
             current = current->next;
         }
         Node<T>* newNode = new Node<T>(value);
@@ -125,12 +126,12 @@ public:
         ++m_size;
     }
 
-    void remove(int index) override {
-        if (index < 0 || index >= m_size) {
+    void remove(size_t index) override {
+        if (index >= m_size) {
             throw std::out_of_range("Index out of range");
         }
         Node<T>* current = sentinal;
-        for (int i = 1; i < index; ++i) {
+        for (size_t i = 1; i < index; ++i) {
             current = current->next;
         }
         Node<T>* nodeToRemove = current->next;

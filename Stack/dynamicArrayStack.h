@@ -6,8 +6,8 @@
 template<typename T>
 class dynamicArrayStack : public Stack<T> {
 private:
-    int m_size;
-    int m_capacity;
+    size_t m_size;
+    size_t m_capacity;
     T* dynamicArray;
 
     //Helper Method;
@@ -19,7 +19,7 @@ private:
             m_capacity /= 2;
         }
         T* newArray = new T[m_capacity];
-        for (int i = 0; i < m_size; i++) {
+        for (size_t i = 0; i < m_size; i++) {
             newArray[i] = dynamicArray[i];
         }
         delete[] dynamicArray;
@@ -37,7 +37,7 @@ public:
         m_size = other.m_size;
         m_capacity = other.m_capacity;
         dynamicArray = new T[m_capacity];
-        for (int i = 0; i < m_size; i++) {
+        for (size_t i = 0; i < m_size; i++) {
             dynamicArray[i] = other.dynamicArray[i];
         }
     }
@@ -52,7 +52,7 @@ public:
         m_size = other.m_size;
         m_capacity = other.m_capacity;
         dynamicArray = new T[m_capacity];
-        for (int i = 0; i < m_size; i++) {
+        for (size_t i = 0; i < m_size; i++) {
             dynamicArray[i] = other.dynamicArray[i];
         }
 
@@ -63,7 +63,7 @@ public:
     }
 
 
-    int size() const override { return this->m_size; }
+    size_t size() const override { return this->m_size; }
 
     bool isEmpty() const override { return this->m_size == 0; }
 

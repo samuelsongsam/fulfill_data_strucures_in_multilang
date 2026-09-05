@@ -18,7 +18,7 @@ template<typename T>
 class singlyStack : public Stack<T> {
 private :
     Node<T>* sentinal;
-    int m_size;
+    size_t m_size;
 public:
     singlyStack() {
         sentinal = new Node<T>();
@@ -90,7 +90,7 @@ public:
         return sentinal -> next -> value;
     }
 
-    int size() const override {
+    size_t size() const override {
         return m_size;
     }
 

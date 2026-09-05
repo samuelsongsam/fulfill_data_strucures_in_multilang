@@ -14,28 +14,28 @@ private:
         Node(const T& value) : data(value), next(nullptr), prev(nullptr) {}
     };
 
-    int m_size;
+    size_t m_size;
     Node* head;
     Node* tail;
 
-    bool isIndexValid(const int& index) const {
-        return index >= 0 && index < m_size;
+    bool isIndexValid(const size_t& index) const {
+        return index < m_size;
     }
 
-    Node* getNode(const int& index) const {
+    Node* getNode(const size_t& index) const {
         if (!isIndexValid(index)) {
             throw std::out_of_range("Index out of bounds");
         }
         
         if (index < m_size / 2) {
             Node* current = head->next;
-            for (int i = 0; i < index; i++) {
+            for (size_t i = 0; i < index; i++) {
                 current = current->next;
             }
             return current;
         } else {
             Node* current = tail->prev;
-            for (int i = m_size - 1; i > index; i--) {
+            for (size_t i = m_size - 1; i > index; i--) {
                 current = current->prev;
             }
             return current;
@@ -85,7 +85,7 @@ public:
         delete tail;
     }
 
-    int size() const override { 
+    size_t size() const override {
         return m_size; 
     }
 
@@ -93,13 +93,13 @@ public:
         return m_size == 0; 
     }
 
-    T get(int index) const override {
+    T get(size_t index) const override {
         return getNode(index)->data;
     }
 
-    int indexOf(const T& value) const override {
+    size_t indexOf(const T& value) const override {
         Node* current = head->next;
-        int index = 0;
+        size_t index = 0;
         while (current != tail) {
             if (current->data == value) {
                 return index;
@@ -107,14 +107,14 @@ public:
             current = current->next;
             index++;
         }
-        return -1;
+        return List<T>::npos;
     }
 
     bool contains(const T& value) const override {
-        return indexOf(value) != -1;
+        return indexOf(value) != List<T>::npos;
     }
 
-    void set(int index, const T& value) override {
+    void set(size_t index, const T& value) override {
         Node* current = getNode(index);
         current->data = value;
     }
@@ -131,8 +131,8 @@ public:
         m_size++;
     }
 
-    void insert(int index, const T& value) override {
-        if (index < 0 || index > m_size) {
+    void insert(size_t index, const T& value) override {
+        if (index > m_size) {
             throw std::out_of_range("Index out of bounds");
         }
 
@@ -148,7 +148,7 @@ public:
         m_size++;
     }
 
-    void remove(int index) override {
+    void remove(size_t index) override {
         Node* nodeToRemove = getNode(index);
         Node* prevNode = nodeToRemove->prev;
         Node* nextNode = nodeToRemove->next;
@@ -161,8 +161,8 @@ public:
     }
 
     void removeValue(const T& value) override {
-        int index = indexOf(value);
-        if (index != -1) {
+        size_t index = indexOf(value);
+        if (index != List<T>::npos) {
             remove(index);
         }
     }
