@@ -1,5 +1,6 @@
 #pragma once
 #include <stdexcept>
+#include <utility>
 #include "virtualStack.h"
 
 template<typename T>
@@ -19,6 +20,13 @@ class singlyStack : public Stack<T> {
 private :
     Node<T>* sentinal;
     size_t m_size;
+
+    void swap(singlyStack& other) noexcept {
+        using std::swap;
+        swap(sentinal, other.sentinal);
+        swap(m_size, other.m_size);
+    }
+
 public:
     singlyStack() {
         sentinal = new Node<T>();
@@ -43,23 +51,8 @@ public:
         }
     }
 
-    singlyStack& operator=(const singlyStack& other) {
-        if (this == &other) {
-            return *this;
-        }
-
-        clear();
-        this->m_size = other.m_size;
-        
-        Node<T>* tail = sentinal; 
-        Node<T>* curOther = other.sentinal->next;
-        
-        while (curOther != nullptr) {
-            tail->next = new Node<T>(curOther->value);
-            tail = tail->next;
-            curOther = curOther->next;
-        }
-
+    singlyStack& operator=(singlyStack other) noexcept {
+        swap(other);
         return *this;
     }
     ~singlyStack() {

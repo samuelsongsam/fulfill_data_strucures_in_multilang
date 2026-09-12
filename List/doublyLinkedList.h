@@ -1,5 +1,6 @@
 #pragma once
 #include <stdexcept>
+#include <utility>
 #include "virtualList.h"
 
 template<typename T>
@@ -50,6 +51,13 @@ private:
         tail->prev = head;
     }
 
+    void swap(doublyLinkedList& other) noexcept {
+        using std::swap;
+        swap(m_size, other.m_size);
+        swap(head, other.head);
+        swap(tail, other.tail);
+    }
+
 public:
     doublyLinkedList() {
         init();
@@ -64,18 +72,8 @@ public:
         }
     }
 
-    doublyLinkedList& operator=(const doublyLinkedList& other) {
-        if (this == &other) {
-            return *this;
-        }
-        
-        clear();
-        Node* current = other.head->next;
-        while (current != other.tail) {
-            add(current->data);
-            current = current->next;
-        }
-        
+    doublyLinkedList& operator=(doublyLinkedList other) noexcept {
+        swap(other);
         return *this;
     }
 

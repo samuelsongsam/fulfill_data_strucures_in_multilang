@@ -1,9 +1,10 @@
 #pragma once
 #include <stdexcept>
+#include <utility>
 #include "virtualList.h"
 
 template<typename T>
-class circleLinkeeList : public List<T> {
+class circleLinkedList : public List<T> {
 private:
     struct Node {
         T data;
@@ -18,6 +19,7 @@ private:
     Node* head;
     Node* tail;
 
+    // Helper Methods
     bool isIndexValid(const size_t& index) const {
         return index < m_size;
     }
@@ -52,12 +54,19 @@ private:
         tail->prev = head;
     }
 
+    void swap(circleLinkedList& other) noexcept {
+        using std::swap;
+        swap(m_size, other.m_size);
+        swap(head, other.head);
+        swap(tail, other.tail);
+    }
+
 public:
-    circleLinkeeList() {
+    circleLinkedList() {
         init();
     }
 
-    circleLinkeeList(const circleLinkeeList& other) {
+    circleLinkedList(const circleLinkedList& other) {
         init();
         Node* current = other.head->next;
         while (current != other.tail) {
@@ -66,22 +75,12 @@ public:
         }
     }
 
-    circleLinkeeList& operator=(const circleLinkeeList& other) {
-        if (this == &other) {
-            return *this;
-        }
-        
-        clear();
-        Node* current = other.head->next;
-        while (current != other.tail) {
-            add(current->data);
-            current = current->next;
-        }
-        
+    circleLinkedList& operator=(circleLinkedList other) noexcept {
+        swap(other);
         return *this;
     }
 
-    ~circleLinkeeList() {
+    ~circleLinkedList() {
         clear();
         delete head;
         delete tail;

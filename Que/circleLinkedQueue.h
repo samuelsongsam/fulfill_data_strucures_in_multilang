@@ -1,5 +1,6 @@
 #pragma once
 #include <stdexcept>
+#include <utility>
 #include "virtualQueue.h"
 
 template<typename T>
@@ -17,6 +18,14 @@ class circleLinkedQueue : public Queue<T> {
     size_t m_size;
     Node* head;
     Node* tail;
+
+    void swap(circleLinkedQueue& other) noexcept {
+        using std::swap;
+        swap(m_size, other.m_size);
+        swap(head, other.head);
+        swap(tail, other.tail);
+    }
+
     public:
     circleLinkedQueue() {
         m_size = 0;
@@ -44,18 +53,8 @@ class circleLinkedQueue : public Queue<T> {
         }
     }
 
-    circleLinkedQueue& operator=(const circleLinkedQueue& other) {
-        if (this == &other) {
-            return *this;
-        }
-        
-        clear();
-        Node* current = other.head->next;
-        while (current != other.tail) {
-            enqueue(current->value);
-            current = current->next;
-        }
-        
+    circleLinkedQueue& operator=(circleLinkedQueue other) noexcept {
+        swap(other);
         return *this;
     }
 

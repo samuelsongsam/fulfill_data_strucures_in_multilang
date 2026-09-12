@@ -1,5 +1,6 @@
 #pragma once
 #include <stdexcept>
+#include <utility>
 #include "virtualList.h"
 
 template<typename T>
@@ -20,6 +21,12 @@ private:
     Node<T>* sentinal;
     size_t m_size;
 
+    void swap(singlyLinkedArrayList& other) noexcept {
+        using std::swap;
+        swap(sentinal, other.sentinal);
+        swap(m_size, other.m_size);
+    }
+
 public:
     singlyLinkedArrayList() {
         sentinal = new Node();
@@ -38,19 +45,8 @@ public:
             current = current->next;
         }
     }
-    singlyLinkedArrayList& operator=(const singlyLinkedArrayList& other) {
-        if (this == &other) {
-            return *this;
-        }
-
-        clear();
-
-        Node<T>* current = other.sentinal->next;
-        while (current != nullptr) {
-            add(current->value);
-            current = current->next;
-        }
-
+    singlyLinkedArrayList& operator=(singlyLinkedArrayList other) noexcept {
+        swap(other);
         return *this;
     }
     ~singlyLinkedArrayList() {

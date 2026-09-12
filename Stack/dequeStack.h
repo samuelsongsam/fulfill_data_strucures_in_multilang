@@ -1,5 +1,7 @@
 #pragma once
+#include <cstddef>
 #include <stdexcept>
+#include <utility>
 #include "virtualStack.h"
 #include "doublyLinkedList.h"
 
@@ -8,8 +10,18 @@ class dequeStack : public Stack<T> {
 private:
     doublyLinkedList<T> container;
 
+    void swap(dequeStack& other) noexcept {
+        using std::swap;
+        swap(container, other.container);
+    }
+
 public:
     dequeStack() = default;
+
+    dequeStack& operator=(dequeStack other) noexcept {
+        swap(other);
+        return *this;
+    }
 
     void push(const T& value) override {
         container.add(value);
