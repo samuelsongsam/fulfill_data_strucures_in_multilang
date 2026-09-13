@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 #include <stdexcept>
 #include <utility>
 #include "virtualStack.h"
@@ -11,6 +12,7 @@ private:
     size_t m_capacity;
     T* dynamicArray;
 
+public:
     //Helper Method;
     void swap(dynamicArrayStack& other) noexcept {
         using std::swap;
@@ -19,6 +21,11 @@ private:
         swap(dynamicArray, other.dynamicArray);
     }
 
+    friend void swap(dynamicArrayStack& a, dynamicArrayStack& b) noexcept {
+        a.swap(b);
+    }
+
+private:
     void resize(bool doubleCapacity = true) {
         if (doubleCapacity) {
             m_capacity *= 2;

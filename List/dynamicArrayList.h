@@ -1,16 +1,18 @@
 #pragma once
+#include <cstddef>
 #include <stdexcept>
 #include <utility>
 #include "virtualList.h"
-#define basicCapacity 16
 
 template<typename T>
 class dynamicArrayList : public List<T> {
 private:
+    static constexpr size_t basicCapacity = 16;
     size_t m_size;
     size_t m_capacity;
     T* dynamicArray;
 
+public:
     //Helper Method;
     void swap(dynamicArrayList& other) noexcept {
         using std::swap;
@@ -19,6 +21,11 @@ private:
         swap(dynamicArray, other.dynamicArray);
     }
 
+    friend void swap(dynamicArrayList& a, dynamicArrayList& b) noexcept {
+        a.swap(b);
+    }
+
+private:
     bool isIndexValid(const size_t& index) const {
         return index < m_size;
     }

@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 #include <stdexcept>
 #include <utility>
 #include "virtualList.h"
@@ -19,11 +20,11 @@ private:
     Node* head;
     Node* tail;
 
-    bool isIndexValid(const size_t& index) const {
+    bool isIndexValid(size_t index) const {
         return index < m_size;
     }
 
-    Node* getNode(const size_t& index) const {
+    Node* getNode(size_t index) const {
         if (!isIndexValid(index)) {
             throw std::out_of_range("Index out of bounds");
         }
@@ -36,7 +37,8 @@ private:
             return current;
         } else {
             Node* current = tail->prev;
-            for (size_t i = m_size - 1; i > index; i--) {
+            size_t steps = (m_size - 1) - index;
+            for (size_t i = 0; i < steps; i++) {
                 current = current->prev;
             }
             return current;
@@ -51,6 +53,7 @@ private:
         tail->prev = head;
     }
 
+public:
     void swap(doublyLinkedList& other) noexcept {
         using std::swap;
         swap(m_size, other.m_size);
@@ -58,7 +61,10 @@ private:
         swap(tail, other.tail);
     }
 
-public:
+    friend void swap(doublyLinkedList& a, doublyLinkedList& b) noexcept {
+        a.swap(b);
+    }
+
     doublyLinkedList() {
         init();
     }
@@ -77,7 +83,7 @@ public:
         return *this;
     }
 
-    ~doublyLinkedList() {
+    ~doublyLinkedList() override {
         clear();
         delete head;
         delete tail;

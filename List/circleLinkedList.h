@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 #include <stdexcept>
 #include <utility>
 #include "virtualList.h"
@@ -54,6 +55,7 @@ private:
         tail->prev = head;
     }
 
+public:
     void swap(circleLinkedList& other) noexcept {
         using std::swap;
         swap(m_size, other.m_size);
@@ -61,7 +63,10 @@ private:
         swap(tail, other.tail);
     }
 
-public:
+    friend void swap(circleLinkedList& a, circleLinkedList& b) noexcept {
+        a.swap(b);
+    }
+
     circleLinkedList() {
         init();
     }

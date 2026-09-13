@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 #include <stdexcept>
 #include <utility>
 #include "virtualStack.h"
@@ -21,13 +22,17 @@ private :
     Node<T>* sentinal;
     size_t m_size;
 
+public:
     void swap(singlyStack& other) noexcept {
         using std::swap;
         swap(sentinal, other.sentinal);
         swap(m_size, other.m_size);
     }
 
-public:
+    friend void swap(singlyStack& a, singlyStack& b) noexcept {
+        a.swap(b);
+    }
+
     singlyStack() {
         sentinal = new Node<T>();
         m_size = 0;

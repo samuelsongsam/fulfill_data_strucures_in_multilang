@@ -15,6 +15,7 @@ private:
     T* dynamicArray;
     size_t head;
 
+public:
     void swap(circleDynamicArrayQueue& other) noexcept {
         using std::swap;
         swap(m_size, other.m_size);
@@ -23,6 +24,11 @@ private:
         swap(head, other.head);
     }
 
+    friend void swap(circleDynamicArrayQueue& a, circleDynamicArrayQueue& b) noexcept {
+        a.swap(b);
+    }
+
+private:
     size_t tail() const {
         return (head + m_size) % m_capacity;
     }

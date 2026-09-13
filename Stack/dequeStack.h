@@ -10,12 +10,16 @@ class dequeStack : public Stack<T> {
 private:
     doublyLinkedList<T> container;
 
+public:
     void swap(dequeStack& other) noexcept {
         using std::swap;
         swap(container, other.container);
     }
 
-public:
+    friend void swap(dequeStack& a, dequeStack& b) noexcept {
+        a.swap(b);
+    }
+
     dequeStack() = default;
 
     dequeStack& operator=(dequeStack other) noexcept {

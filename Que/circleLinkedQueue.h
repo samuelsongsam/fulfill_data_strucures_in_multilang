@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 #include <stdexcept>
 #include <utility>
 #include "virtualQueue.h"
@@ -19,6 +20,7 @@ class circleLinkedQueue : public Queue<T> {
     Node* head;
     Node* tail;
 
+public:
     void swap(circleLinkedQueue& other) noexcept {
         using std::swap;
         swap(m_size, other.m_size);
@@ -26,7 +28,10 @@ class circleLinkedQueue : public Queue<T> {
         swap(tail, other.tail);
     }
 
-    public:
+    friend void swap(circleLinkedQueue& a, circleLinkedQueue& b) noexcept {
+        a.swap(b);
+    }
+
     circleLinkedQueue() {
         m_size = 0;
         head = new Node();
