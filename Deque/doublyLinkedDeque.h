@@ -79,7 +79,7 @@ public:
     }
     T removeFirst() override {
         if (isEmpty()) {
-            throw std::out_of_range("Empty deque!");
+            throw std::out_of_range("Empty deque!\n");
         }
         Node* toBeRemoved = head -> next;
         T res = toBeRemoved -> data;
@@ -91,7 +91,7 @@ public:
     }
     T removeLast() override {
         if (isEmpty()) {
-            throw std::out_of_range("Empty deque!");
+            throw std::out_of_range("Empty deque!\n");
         }
         Node* toBeRmoved = tail -> prev;
         T res = toBeRmoved -> data;
@@ -103,13 +103,13 @@ public:
     }
     T peekFirst() const override {
         if (isEmpty()) {
-            throw std::out_of_range("Empty deque!");
+            throw std::out_of_range("Empty deque!\n");
         }
         return head -> next -> data;
     }
     T peekLast() const override {
         if (isEmpty()) {
-            throw std::out_of_range("Empty deque!");
+            throw std::out_of_range("Empty deque!\n");
         }
         return tail -> prev -> data;
     }
