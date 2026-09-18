@@ -16,6 +16,38 @@ private:
         Node(const T& value) : data(value), next(nullptr), prev(nullptr) {}
     };
 
+    template<typename U, typename NodeType>
+    class IteratorImpl : public Iterator<U> {
+    private:
+        NodeType* current;
+
+    public:
+        explicit IteratorImpl(NodeType* start) : current(start) {}
+
+        U& operator*() override {
+            return current->data;
+        }
+
+        Iterator<U>& operator++() override {
+            if (current != nullptr) {
+                current = current->next;
+            }
+            return *this;
+        }
+
+        bool operator!=(const Iterator<U>& other) const override {
+            const auto* otherIt = dynamic_cast<const IteratorImpl<U, NodeType>*>(&other);
+            return otherIt == nullptr ? true : current != otherIt->current;
+        }
+
+        bool operator==(const Iterator<U>& other) const override {
+            const auto* otherIt = dynamic_cast<const IteratorImpl<U, NodeType>*>(&other);
+            return otherIt != nullptr && current == otherIt->current;
+        }
+    };
+
+    using iterator_impl = IteratorImpl<T, Node>;
+
     size_t m_size;
     Node* head;
     Node* tail;
@@ -187,7 +219,11 @@ public:
         m_size = 0;
     }
 
-    Iterator<T> iterator() override {
-        return Iterator<T>(head->next);
+    typename List<T>::iterator* begin() override {
+        return new iterator_impl(head->next);
+    }
+
+    typename List<T>::iterator* end() override {
+        return new iterator_impl(nullptr);
     }
 };

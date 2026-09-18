@@ -17,10 +17,42 @@ public:
 };
 
 template<typename T>
+class singlyLinkedListIterator : public Iterator<T> {
+private:
+    Node<T>* current;
+
+public:
+    explicit singlyLinkedListIterator(Node<T>* start) : current(start) {}
+
+    T& operator*() override {
+        return current->value;
+    }
+
+    Iterator<T>& operator++() override {
+        if (current != nullptr) {
+            current = current->next;
+        }
+        return *this;
+    }
+
+    bool operator!=(const Iterator<T>& other) const override {
+        const auto* otherIt = dynamic_cast<const singlyLinkedListIterator<T>*>(&other);
+        return otherIt == nullptr ? true : current != otherIt->current;
+    }
+
+    bool operator==(const Iterator<T>& other) const override {
+        const auto* otherIt = dynamic_cast<const singlyLinkedListIterator<T>*>(&other);
+        return otherIt != nullptr && current == otherIt->current;
+    }
+};
+
+template<typename T>
 class singlyLinkedArrayList : public List<T> {
 private:
     Node<T>* sentinal;
     size_t m_size;
+
+    using iterator_impl = singlyLinkedListIterator<T>;
 
 public:
     void swap(singlyLinkedArrayList& other) noexcept {
@@ -167,8 +199,12 @@ public:
         m_size = 0;
     }
 
-    Iterator<T> iterator() override {
-        return Iterator<T>(sentinal);
+    typename List<T>::iterator* begin() override {
+        return new iterator_impl(sentinal->next);
+    }
+
+    typename List<T>::iterator* end() override {
+        return new iterator_impl(nullptr);
     }
 
 };

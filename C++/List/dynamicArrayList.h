@@ -5,12 +5,45 @@
 #include "virtualList.h"
 
 template<typename T>
+class dynamicArrayListIterator : public Iterator<T> {
+private:
+    T* current;
+    T* end;
+
+public:
+    dynamicArrayListIterator(T* begin, T* finish) : current(begin), end(finish) {}
+
+    T& operator*() override {
+        return *current;
+    }
+
+    Iterator<T>& operator++() override {
+        if (current != end) {
+            ++current;
+        }
+        return *this;
+    }
+
+    bool operator!=(const Iterator<T>& other) const override {
+        const auto* otherIt = dynamic_cast<const dynamicArrayListIterator<T>*>(&other);
+        return otherIt == nullptr ? true : current != otherIt->current;
+    }
+
+    bool operator==(const Iterator<T>& other) const override {
+        const auto* otherIt = dynamic_cast<const dynamicArrayListIterator<T>*>(&other);
+        return otherIt != nullptr && current == otherIt->current;
+    }
+};
+
+template<typename T>
 class dynamicArrayList : public List<T> {
 private:
     static constexpr size_t basicCapacity = 16;
     size_t m_size;
     size_t m_capacity;
     T* dynamicArray;
+
+    using iterator_impl = dynamicArrayListIterator<T>;
 
 public:
     //Helper Method;
@@ -163,8 +196,12 @@ public:
         m_size = 0;
     }
 
-    Iterator<T> iterator() override {
-        return Iterator<T>(dynamicArray);
+    typename List<T>::iterator* begin() override {
+        return new iterator_impl(dynamicArray, dynamicArray + m_size);
+    }
+
+    typename List<T>::iterator* end() override {
+        return new iterator_impl(dynamicArray + m_size, dynamicArray + m_size);
     }
 
 };

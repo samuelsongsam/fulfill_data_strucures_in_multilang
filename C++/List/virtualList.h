@@ -7,6 +7,9 @@ class Iterator;
 template <typename T>
 class List {
 public:
+    using value_type = T;
+    using iterator = Iterator<T>;
+
     static constexpr size_t npos = static_cast<size_t>(-1);
 
     virtual ~List() = default;
@@ -24,5 +27,6 @@ public:
     virtual void removeValue(const T& value) = 0;
     virtual void clear() = 0;
 
-    virtual Iterator<T> iterator() = 0;
+    virtual iterator* begin() = 0;
+    virtual iterator* end() = 0;
 };
