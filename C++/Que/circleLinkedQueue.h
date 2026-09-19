@@ -21,6 +21,8 @@ class circleLinkedQueue : public Queue<T> {
     Node* tail;
 
 public:
+    using Queue<T>::operator=;
+
     void swap(circleLinkedQueue& other) noexcept {
         using std::swap;
         swap(m_size, other.m_size);
@@ -58,7 +60,7 @@ public:
         }
     }
 
-    circleLinkedQueue& operator=(circleLinkedQueue other) noexcept {
+    circleLinkedQueue& operator=(circleLinkedQueue other) {
         swap(other);
         return *this;
     }
@@ -114,5 +116,14 @@ public:
         tail->next = head;
         tail->prev = head;
         m_size = 0;
+    }
+
+protected:
+    void copyTo(Queue<T>& destination) const override {
+        Node* current = head->next;
+        while (current != tail) {
+            destination.enqueue(current->value);
+            current = current->next;
+        }
     }
 };

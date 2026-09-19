@@ -14,6 +14,13 @@ public:
 
     virtual ~List() = default;
 
+    List& operator=(const List& other) {
+        if (this != &other) {
+            copyFrom(other);
+        }
+        return *this;
+    }
+
     virtual size_t size() const = 0;
     virtual bool isEmpty() const = 0;
     virtual T get(size_t index) const = 0;
@@ -29,4 +36,7 @@ public:
 
     virtual iterator* begin() = 0;
     virtual iterator* end() = 0;
+
+protected:
+    virtual void copyFrom(const List& other) = 0;
 };

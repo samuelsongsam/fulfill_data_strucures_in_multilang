@@ -11,6 +11,8 @@ private:
     doublyLinkedList<T> container;
 
 public:
+    using Stack<T>::operator=;
+
     void swap(dequeStack& other) noexcept {
         using std::swap;
         swap(container, other.container);
@@ -22,7 +24,7 @@ public:
 
     dequeStack() = default;
 
-    dequeStack& operator=(dequeStack other) noexcept {
+    dequeStack& operator=(dequeStack other) {
         swap(other);
         return *this;
     }
@@ -55,5 +57,12 @@ public:
 
     void clear() override {
         container.clear();
+    }
+
+protected:
+    void copyTo(Stack<T>& destination) const override {
+        for (size_t i = 0; i < container.size(); ++i) {
+            destination.push(container.get(i));
+        }
     }
 };

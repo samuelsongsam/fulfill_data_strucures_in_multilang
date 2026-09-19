@@ -80,6 +80,8 @@ private:
     }
 
 public:
+    using String::operator=;
+
     RopeString() : root(nullptr), m_totalLength(0) {}
 
     explicit RopeString(const char* str) : root(nullptr), m_totalLength(0) {
@@ -98,7 +100,7 @@ public:
         m_totalLength = other.m_totalLength;
     }
 
-    RopeString& operator=(RopeString other) noexcept {
+    RopeString& operator=(RopeString other) {
         std::swap(root, other.root);
         std::swap(m_totalLength, other.m_totalLength);
         return *this;
@@ -266,5 +268,22 @@ public:
             }
         }
         result.add(substring(start, m_totalLength));
+    }
+
+protected:
+    void copyFrom(const String& other) override {
+        RopeNode* newRoot = nullptr;
+        if (other.length() != 0) {
+            char* buffer = new char[other.length()];
+            for (size_t i = 0; i < other.length(); ++i) {
+                buffer[i] = other.charAt(i);
+            }
+            newRoot = new RopeNode(buffer, other.length());
+            delete[] buffer;
+        }
+
+        destroyTree(root);
+        root = newRoot;
+        m_totalLength = other.length();
     }
 };

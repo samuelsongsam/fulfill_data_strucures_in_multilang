@@ -26,6 +26,8 @@ private:
         head = 0;
     }
 public:
+    using Deque<T>::operator=;
+
     void swap(dynamicArrayDeque& other) noexcept {
         using std::swap;
         swap(m_size, other.m_size);
@@ -51,7 +53,7 @@ public:
         }
         head = 0;
     }
-    dynamicArrayDeque& operator=(dynamicArrayDeque other) noexcept {
+    dynamicArrayDeque& operator=(dynamicArrayDeque other) {
         swap(other);
         return *this;
     }
@@ -117,5 +119,12 @@ public:
     void clear() override {
         m_size = 0;
         head = 0;
+    }
+
+protected:
+    void copyTo(Deque<T>& destination) const override {
+        for (size_t i = 0; i < m_size; ++i) {
+            destination.addLast(dynamicArray[(head + i) % m_capacity]);
+        }
     }
 };

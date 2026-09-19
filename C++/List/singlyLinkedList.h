@@ -55,6 +55,8 @@ private:
     using iterator_impl = singlyLinkedListIterator<T>;
 
 public:
+    using List<T>::operator=;
+
     void swap(singlyLinkedArrayList& other) noexcept {
         using std::swap;
         swap(sentinal, other.sentinal);
@@ -83,7 +85,7 @@ public:
             current = current->next;
         }
     }
-    singlyLinkedArrayList& operator=(singlyLinkedArrayList other) noexcept {
+    singlyLinkedArrayList& operator=(singlyLinkedArrayList other) {
         swap(other);
         return *this;
     }
@@ -95,6 +97,17 @@ public:
     size_t size() const override { return this->m_size; }
 
     bool isEmpty() const override { return this->m_size == 0; }
+
+    T& get(size_t index) {
+        if (index >= m_size) {
+            throw std::out_of_range("Index out of range");
+        }
+        Node<T>* current = sentinal;
+        for (size_t i = 1; i <= index; ++i) {
+            current = current->next;
+        }
+        return current->value;
+    }
 
     T get(size_t index) const override {
         if (index >= m_size) {
@@ -205,6 +218,14 @@ public:
 
     typename List<T>::iterator* end() override {
         return new iterator_impl(nullptr);
+    }
+
+protected:
+    void copyFrom(const List<T>& other) override {
+        clear();
+        for (size_t i = 0; i < other.size(); ++i) {
+            add(other.get(i));
+        }
     }
 
 };

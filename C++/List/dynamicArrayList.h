@@ -46,6 +46,8 @@ private:
     using iterator_impl = dynamicArrayListIterator<T>;
 
 public:
+    using List<T>::operator=;
+
     //Helper Method;
     void swap(dynamicArrayList& other) noexcept {
         using std::swap;
@@ -93,7 +95,7 @@ public:
         }
     }
 
-    dynamicArrayList& operator=(dynamicArrayList other) noexcept {
+    dynamicArrayList& operator=(dynamicArrayList other) {
         swap(other);
         return *this;
     }
@@ -105,6 +107,13 @@ public:
     size_t size() const override { return this->m_size; }
 
     bool isEmpty() const override { return this->m_size == 0; }
+
+    T& get(size_t index) {
+        if (!isIndexValid(index)) {
+            throw std::out_of_range("Index out of bounds");
+        }
+        return dynamicArray[index];
+    }
 
     T get(size_t index) const override {
         if (!isIndexValid(index)) {
@@ -122,6 +131,24 @@ public:
 
     bool contains(const T& value) const override {
         return indexOf(value) != List<T>::npos;
+    }
+
+    bool operator==(const dynamicArrayList& other) const {
+        if (m_size != other.m_size) {
+            return false;
+        }
+
+        for (size_t i = 0; i < m_size; ++i) {
+            if (dynamicArray[i] != other.dynamicArray[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    bool operator!=(const dynamicArrayList& other) const {
+        return !(*this == other);
     }
 
 
@@ -202,6 +229,14 @@ public:
 
     typename List<T>::iterator* end() override {
         return new iterator_impl(dynamicArray + m_size, dynamicArray + m_size);
+    }
+
+protected:
+    void copyFrom(const List<T>& other) override {
+        clear();
+        for (size_t i = 0; i < other.size(); ++i) {
+            add(other.get(i));
+        }
     }
 
 };

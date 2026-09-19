@@ -86,6 +86,8 @@ private:
     }
 
 public:
+    using List<T>::operator=;
+
     void swap(doublyLinkedList& other) noexcept {
         using std::swap;
         swap(m_size, other.m_size);
@@ -110,7 +112,7 @@ public:
         }
     }
 
-    doublyLinkedList& operator=(doublyLinkedList other) noexcept {
+    doublyLinkedList& operator=(doublyLinkedList other) {
         swap(other);
         return *this;
     }
@@ -127,6 +129,10 @@ public:
 
     bool isEmpty() const override { 
         return m_size == 0; 
+    }
+
+    T& get(size_t index) {
+        return getNode(index)->data;
     }
 
     T get(size_t index) const override {
@@ -221,5 +227,13 @@ public:
 
     typename List<T>::iterator* end() override {
         return new iterator_impl(nullptr);
+    }
+
+protected:
+    void copyFrom(const List<T>& other) override {
+        clear();
+        for (size_t i = 0; i < other.size(); ++i) {
+            add(other.get(i));
+        }
     }
 };

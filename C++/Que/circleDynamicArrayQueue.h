@@ -16,6 +16,8 @@ private:
     size_t head;
 
 public:
+    using Queue<T>::operator=;
+
     void swap(circleDynamicArrayQueue& other) noexcept {
         using std::swap;
         swap(m_size, other.m_size);
@@ -76,7 +78,7 @@ public:
         }
     }
 
-    circleDynamicArrayQueue& operator=(circleDynamicArrayQueue other) noexcept {
+    circleDynamicArrayQueue& operator=(circleDynamicArrayQueue other) {
         swap(other);
         return *this;
     }
@@ -125,5 +127,12 @@ public:
     void clear() override {
         m_size = 0;
         head = 0;
+    }
+
+protected:
+    void copyTo(Queue<T>& destination) const override {
+        for (size_t i = 0; i < m_size; ++i) {
+            destination.enqueue(dynamicArray[(head + i) % m_capacity]);
+        }
     }
 };

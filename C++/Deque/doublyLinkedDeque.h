@@ -21,6 +21,8 @@ private:
     Node* tail;
 
 public:
+    using Deque<T>::operator=;
+
     void swap(DoublyLinkedDeque& other) noexcept {
         using std::swap;
         swap(m_size, other.m_size);
@@ -52,7 +54,7 @@ public:
         }
 
     }
-    DoublyLinkedDeque& operator=(DoublyLinkedDeque other) noexcept {
+    DoublyLinkedDeque& operator=(DoublyLinkedDeque other) {
         swap(other);
         return *this;
     }
@@ -129,5 +131,14 @@ public:
         head->next = tail;
         tail->prev = head;
         m_size = 0;
+    }
+
+protected:
+    void copyTo(Deque<T>& destination) const override {
+        Node* current = head->next;
+        while (current != tail) {
+            destination.addLast(current->data);
+            current = current->next;
+        }
     }
 };

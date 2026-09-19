@@ -5,24 +5,26 @@
 #include "virtualStack.h"
 
 template<typename T>
-class Node {
+class StackNode {
 public:
     T value;
-    Node* next;
+    StackNode* next;
 
-    Node() : value(T()), next(nullptr) {}
-    Node(const T& v) : value(v), next(nullptr) {}
-    Node(const T& v, Node* node) : value(v), next(node) {}
+    StackNode() : value(T()), next(nullptr) {}
+    StackNode(const T& v) : value(v), next(nullptr) {}
+    StackNode(const T& v, StackNode* node) : value(v), next(node) {}
 };
 
 
 template<typename T>
 class singlyStack : public Stack<T> {
 private :
-    Node<T>* sentinal;
+    StackNode<T>* sentinal;
     size_t m_size;
 
 public:
+    using Stack<T>::operator=;
+
     void swap(singlyStack& other) noexcept {
         using std::swap;
         swap(sentinal, other.sentinal);
@@ -34,29 +36,29 @@ public:
     }
 
     singlyStack() {
-        sentinal = new Node<T>();
+        sentinal = new StackNode<T>();
         m_size = 0;
     }
     singlyStack(const T& v) {
-        sentinal = new Node<T>();
-        sentinal -> next = new Node<T>(v);
+        sentinal = new StackNode<T>();
+        sentinal -> next = new StackNode<T>(v);
         m_size = 1;
     }
     singlyStack(const singlyStack& other) {
-        sentinal = new Node<T>();
+        sentinal = new StackNode<T>();
         m_size = other.m_size;
         
-        Node<T>* tail = sentinal;
-        Node<T>* curOther = other.sentinal->next;
+        StackNode<T>* tail = sentinal;
+        StackNode<T>* curOther = other.sentinal->next;
         
         while (curOther != nullptr) {
-            tail->next = new Node<T>(curOther->value);
+            tail->next = new StackNode<T>(curOther->value);
             tail = tail->next;
             curOther = curOther->next;
         }
     }
 
-    singlyStack& operator=(singlyStack other) noexcept {
+    singlyStack& operator=(singlyStack other) {
         swap(other);
         return *this;
     }
@@ -67,7 +69,7 @@ public:
 
 
     void push(const T& value) override {
-        sentinal -> next = new Node<T>(value, sentinal -> next);
+        sentinal -> next = new StackNode<T>(value, sentinal -> next);
         m_size++;
     }
 
@@ -75,7 +77,7 @@ public:
         if (isEmpty()) {
             throw std::runtime_error("Stack is empty");
         }
-        Node<T>* nodeToRemove = sentinal -> next;
+        StackNode<T>* nodeToRemove = sentinal -> next;
         sentinal -> next = nodeToRemove -> next;
         delete nodeToRemove;
         m_size--;
@@ -97,9 +99,9 @@ public:
     }
 
     void clear() override {
-        Node<T>* current = sentinal -> next;
+        StackNode<T>* current = sentinal -> next;
         while (current != nullptr) {
-            Node<T>* nextNode = current -> next;
+            StackNode<T>* nextNode = current -> next;
             delete current;
             current = nextNode;
         }
@@ -107,10 +109,24 @@ public:
         sentinal->next = nullptr;
     }
 
+protected:
+    static void copyNodes(const StackNode<T>* node, Stack<T>& destination) {
+        if (node == nullptr) {
+            return;
+        }
+        copyNodes(node->next, destination);
+        destination.push(node->value);
+    }
+
+    void copyTo(Stack<T>& destination) const override {
+        copyNodes(sentinal->next, destination);
+    }
+
+public:
     void reverse() {
-        Node<T>* prev = nullptr;
-        Node<T>* current = sentinal->next;
-        Node<T>* nextNode = nullptr;
+        StackNode<T>* prev = nullptr;
+        StackNode<T>* current = sentinal->next;
+        StackNode<T>* nextNode = nullptr;
 
         while (current != nullptr) {
             nextNode = current->next; // 先记录下一步要走的位置

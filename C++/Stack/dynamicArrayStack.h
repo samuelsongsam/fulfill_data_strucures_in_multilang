@@ -13,6 +13,8 @@ private:
     T* dynamicArray;
 
 public:
+    using Stack<T>::operator=;
+
     //Helper Method;
     void swap(dynamicArrayStack& other) noexcept {
         using std::swap;
@@ -56,7 +58,7 @@ public:
         }
     }
 
-    dynamicArrayStack& operator=(dynamicArrayStack other) noexcept {
+    dynamicArrayStack& operator=(dynamicArrayStack other) {
         swap(other);
         return *this;
     }
@@ -96,6 +98,13 @@ public:
 
     void clear() override {
         m_size = 0;
+    }
+
+protected:
+    void copyTo(Stack<T>& destination) const override {
+        for (size_t i = 0; i < m_size; ++i) {
+            destination.push(dynamicArray[i]);
+        }
     }
 
 };

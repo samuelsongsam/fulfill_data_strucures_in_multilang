@@ -9,6 +9,13 @@ public:
 
     virtual ~String() = default;
 
+    String& operator=(const String& other) {
+        if (this != &other) {
+            copyFrom(other);
+        }
+        return *this;
+    }
+
     virtual size_t length() const = 0;
     virtual char charAt(size_t index) const = 0;
 
@@ -21,4 +28,7 @@ public:
     virtual bool equals(const String& other) const = 0;
 
     virtual void split(const String& delimiter, List<std::unique_ptr<String>>& result) const = 0;
+
+protected:
+    virtual void copyFrom(const String& other) = 0;
 };
